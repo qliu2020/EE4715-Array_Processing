@@ -205,10 +205,11 @@ for i=0:m-1
     U_they =  vertcat(U_they,U(i*M+2:(i+1)*M,:));  
 end
 M_the = pinv(U_thex)*U_they;
-% f = angle(eig(M_phi))/(2*pi);
-% theta = asind(angle(eig(M_the))/pi);
-[T,Theta] = eig(M_the);
-theta = sort(asind(angle(eig(Theta))/pi));
-Phi = T\M_phi*T;
-f = sort(angle(eig(Phi))/(2*pi));
+M = [M_the,M_phi];
+[~,D] = joint_diag(M,1.0e-8);
+[~,p] =size(D);
+Theta = D(:,1:p/2);
+Phi = D(:,p/2+1:p);
+theta = asind(angle(eig(Theta))/pi);
+f = angle(eig(Phi))/(2*pi);
 end
